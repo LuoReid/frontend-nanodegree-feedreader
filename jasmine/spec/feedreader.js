@@ -34,7 +34,7 @@ $(function() {
     it('each feed url should be defined and not empty', function() {
       allFeeds.forEach(function(e) {
         expect(e.url).toBeDefined();
-        expect(e.url).not.toBeNull();
+        expect(e.url).toBeTruthy();
       });
     });
 
@@ -46,7 +46,7 @@ $(function() {
     it('each feed name should be defined and not empty', function() {
       allFeeds.forEach(function(e) {
         expect(e.name).toBeDefined();
-        expect(e.name).not.toBeNull();
+        expect(e.name).toBeTruthy();
       });
     });
   });
@@ -77,9 +77,9 @@ $(function() {
      */
     it('should be show menu and hide menu when click menu icon', function() {
       $('.menu-icon-link').trigger('click');
-      expect($body.hasClass('menu-hidden')).toBeFalsy();
+      expect($body.hasClass('menu-hidden')).toBe(false);
       $('.menu-icon-link').trigger('click');
-      expect($body.hasClass('menu-hidden')).toBeTruthy();
+      expect($body.hasClass('menu-hidden')).toBe(true);
     });
   });
 
@@ -92,14 +92,11 @@ $(function() {
      * the use of Jasmine's beforeEach and asynchronous done() function.
      */
     beforeEach(function(done) {
-      loadFeed(1, function() {
-        done();
-      });
+      loadFeed(1, done);
     });
 
-    it('should be has one entry link at least', function(done) {
+    it('should be has one entry link at least', function() {
       expect($('.feed a').length).toBeGreaterThan(0);
-      done();
     });
   });
   /* TODO: Write a new test suite named "New Feed Selection" */
@@ -108,15 +105,19 @@ $(function() {
      * by the loadFeed function that the content actually changes.
      * Remember, loadFeed() is asynchronous.
      */
-    var content = $('.feed').html(); //beacuse default id is 0
+    var content1, content2;
     beforeEach(function(done) {
       loadFeed(1, function() {
-        done();
+        content1 = $('.feed').html(); //此时第一次加载完成，可以获取到数据
+        loadFeed(2, function() {
+          content2 = $('.feed').html(); //此时第二次加载完成，可以获取到数据
+          done();
+        });
       });
     });
 
     it('should be change the content when new feed selection', function(done) {
-      expect(content).not.toMatch($('.feed').html());
+      expect(content1).not.toMatch(content2);
       done();
     });
   });
